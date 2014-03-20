@@ -553,140 +553,16 @@ namespace Signal
 
 				case OP_EQEQ:
 				{
-					std::shared_ptr<Object> right = m_stack.top ();
-					m_stack.pop ();
+					std::shared_ptr<Object> right = m_stack.top();
+					m_stack.pop();
 
-					std::shared_ptr<Object> left = m_stack.top ();;
-					m_stack.pop ();
+					std::shared_ptr<Object> left = m_stack.top();
+					m_stack.pop();
 
-					switch (left->type ())
-					{
-						case Object::TRUE:
-						{
-							switch (right->type ())
-							{
-								case Object::TRUE:
-								{
-									m_stack.push (std::shared_ptr<Object> (new True ()));
-								}
-								break;
-
-								default:
-								{
-									m_stack.push (std::shared_ptr<Object> (new False ()));
-								}
-								break;
-							}
-						}
-						break;
-
-						case Object::FALSE:
-						{
-							switch (right->type ())
-							{
-								case Object::FALSE:
-								{
-									m_stack.push (std::shared_ptr<Object> (new True ()));
-								}
-								break;
-
-								default:
-								{
-									m_stack.push (std::shared_ptr<Object> (new False ()));
-								}
-								break;
-							}
-						}
-						break;
-
-						case Object::NIL:
-						{
-							switch (right->type ())
-							{
-								case Object::NIL:
-								{
-									m_stack.push (std::shared_ptr<Object> (new True ()));
-								}
-								break;
-
-								default:
-								{
-									m_stack.push (std::shared_ptr<Object> (new False ()));
-								}
-								break;
-							}
-						}
-						break;
-
-						case Object::NUMBER:
-						{
-							switch (right->type ())
-							{
-								case Object::NUMBER:
-								{
-									if (dynamic_cast<Number*> (left.get ())->number () == dynamic_cast<Number*> (right.get ())->number ()) {
-										m_stack.push (std::shared_ptr<Object> (new True ()));
-									} else {
-										m_stack.push (std::shared_ptr<Object> (new False ()));
-									}
-								}
-								break;
-
-								default:
-								{
-									m_stack.push (std::shared_ptr<Object> (new False ()));
-								}
-								break;
-							}
-						}
-						break;
-
-						case Object::STRING:
-						{
-							switch (right->type ())
-							{
-								case Object::STRING:
-								{
-									if (dynamic_cast<String*> (left.get ())->text () == dynamic_cast<String*> (right.get ())->text ()) {
-										m_stack.push (std::shared_ptr<Object> (new True ()));
-									} else {
-										m_stack.push (std::shared_ptr<Object> (new False ()));
-									}
-								}
-								break;
-
-								default:
-								{
-									m_stack.push (std::shared_ptr<Object> (new False ()));
-								}
-								break;
-							}
-						}
-						break;
-
-						case Object::INSTANCE:
-						{
-							switch (right->type ())
-							{
-								case Object::INSTANCE:
-								{
-									if (left.get () == right.get ()) {
-										m_stack.push (std::shared_ptr<Object> (new True ()));
-									} else {
-										m_stack.push (std::shared_ptr<Object> (new False ()));
-									}
-								}
-								break;
-
-								default:
-								{
-									m_stack.push (std::shared_ptr<Object> (new False ()));
-								}
-								break;
-							}
-						}
-						break;
-					}
+					if (*left.get() == *right.get())
+						m_stack.push(std::shared_ptr<Object>(new True()));
+					else
+						m_stack.push(std::shared_ptr<Object>(new False()));
 				}
 				break;
 
@@ -698,134 +574,10 @@ namespace Signal
 					std::shared_ptr<Object> left = m_stack.top ();;
 					m_stack.pop ();
 
-					switch (left->type ())
-					{
-						case Object::TRUE:
-						{
-							switch (right->type ())
-							{
-								case Object::TRUE:
-								{
-									m_stack.push (std::shared_ptr<Object> (new False ()));
-								}
-								break;
-
-								default:
-								{
-									m_stack.push (std::shared_ptr<Object> (new True ()));
-								}
-								break;
-							}
-						}
-						break;
-
-						case Object::FALSE:
-						{
-							switch (right->type ())
-							{
-								case Object::FALSE:
-								{
-									m_stack.push (std::shared_ptr<Object> (new False ()));
-								}
-								break;
-
-								default:
-								{
-									m_stack.push (std::shared_ptr<Object> (new True ()));
-								}
-								break;
-							}
-						}
-						break;
-
-						case Object::NIL:
-						{
-							switch (right->type ())
-							{
-								case Object::NIL:
-								{
-									m_stack.push (std::shared_ptr<Object> (new False ()));
-								}
-								break;
-
-								default:
-								{
-									m_stack.push (std::shared_ptr<Object> (new True ()));
-								}
-								break;
-							}
-						}
-						break;
-
-						case Object::NUMBER:
-						{
-							switch (right->type ())
-							{
-								case Object::NUMBER:
-								{
-									if (dynamic_cast<Number*> (left.get ())->number () != dynamic_cast<Number*> (right.get ())->number ()) {
-										m_stack.push (std::shared_ptr<Object> (new True ()));
-									} else {
-										m_stack.push (std::shared_ptr<Object> (new False ()));
-									}
-								}
-								break;
-
-								default:
-								{
-									m_stack.push (std::shared_ptr<Object> (new False ()));
-								}
-								break;
-							}
-						}
-						break;
-
-						case Object::STRING:
-						{
-							switch (right->type ())
-							{
-								case Object::STRING:
-								{
-									if (dynamic_cast<String*> (left.get ())->text () != dynamic_cast<String*> (right.get ())->text ()) {
-										m_stack.push (std::shared_ptr<Object> (new True ()));
-									} else {
-										m_stack.push (std::shared_ptr<Object> (new False ()));
-									}
-								}
-								break;
-
-								default:
-								{
-									m_stack.push (std::shared_ptr<Object> (new False ()));
-								}
-								break;
-							}
-						}
-						break;
-
-						case Object::INSTANCE:
-						{
-							switch (right->type ())
-							{
-								case Object::INSTANCE:
-								{
-									if (left.get () != right.get ()) {
-										m_stack.push (std::shared_ptr<Object> (new True ()));
-									} else {
-										m_stack.push (std::shared_ptr<Object> (new False ()));
-									}
-								}
-								break;
-
-								default:
-								{
-									m_stack.push (std::shared_ptr<Object> (new False ()));
-								}
-								break;
-							}
-						}
-						break;
-					}
+					if (*left.get() != *right.get())
+						m_stack.push(std::shared_ptr<Object> (new True()));
+					else
+						m_stack.push(std::shared_ptr<Object> (new False()));
 				}
 				break;
 
@@ -837,163 +589,55 @@ namespace Signal
 					std::shared_ptr<Object> left = m_stack.top ();;
 					m_stack.pop ();
 					
-					switch (left->type ())
-					{
-						case Object::NUMBER:
-						{
-							switch (right->type ())
-							{
-								case Object::NUMBER:
-								{
-									if (dynamic_cast<Number*> (left.get ())->number () < dynamic_cast<Number*> (right.get ())->number ()) {
-										m_stack.push (m_env.obj_true ());
-									} else {
-										m_stack.push (m_env.obj_false ());
-									}
-								}
-								break;
-
-								default:
-								{
-									throw Error ("Interpreter : Type mismatch on operator '<'.");
-								}
-								break;
-							}
-						}
-						break;
-
-						default:
-						{
-							throw Error ("Interpreter : Invalid arguments to operator '<'.");
-						}
-						break;
-					}
+					if (*left.get() < *right.get())
+						m_stack.push(std::shared_ptr<Object> (new True()));
+					else
+						m_stack.push(std::shared_ptr<Object> (new False()));
 				}
 				break;
 
 				case OP_GT:
 				{
-					std::shared_ptr<Object> right = m_stack.top ();
-					m_stack.pop ();
+					std::shared_ptr<Object> right = m_stack.top();
+					m_stack.pop();
 
-					std::shared_ptr<Object> left = m_stack.top ();;
-					m_stack.pop ();
+					std::shared_ptr<Object> left = m_stack.top();
+					m_stack.pop();
 					
-					switch (left->type ())
-					{
-						case Object::NUMBER:
-						{
-							switch (right->type ())
-							{
-								case Object::NUMBER:
-								{
-									if (dynamic_cast<Number*> (left.get ())->number () > dynamic_cast<Number*> (right.get ())->number ()) {
-										m_stack.push (m_env.obj_true ());
-									} else {
-										m_stack.push (m_env.obj_false ());
-									}
-								}
-								break;
-
-								default:
-								{
-									throw Error ("Interpreter : Type mismatch on operator '>'.");
-								}
-								break;
-							}
-						}
-						break;
-
-						default:
-						{
-							throw Error ("Interpreter : Invalid arguments to operator '>'.");
-						}
-						break;
-					}
+					if (*left.get() > *right.get())
+						m_stack.push(std::shared_ptr<Object> (new True()));
+					else
+						m_stack.push(std::shared_ptr<Object> (new False()));
 				}
 				break;
 
 				case OP_LTE:
 				{
-					std::shared_ptr<Object> right = m_stack.top ();
-					m_stack.pop ();
+					std::shared_ptr<Object> right = m_stack.top();
+					m_stack.pop();
 
-					std::shared_ptr<Object> left = m_stack.top ();;
-					m_stack.pop ();
+					std::shared_ptr<Object> left = m_stack.top();
+					m_stack.pop();
 					
-					switch (left->type ())
-					{
-						case Object::NUMBER:
-						{
-							switch (right->type ())
-							{
-								case Object::NUMBER:
-								{
-									if (dynamic_cast<Number*> (left.get ())->number () <= dynamic_cast<Number*> (right.get ())->number ()) {
-										m_stack.push (m_env.obj_true ());
-									} else {
-										m_stack.push (m_env.obj_false ());
-									}
-								}
-								break;
-
-								default:
-								{
-									throw Error ("Interpreter : Type mismatch on operator '<='.");
-								}
-								break;
-							}
-						}
-						break;
-
-						default:
-						{
-							throw Error ("Interpreter : Invalid arguments to operator '<='.");
-						}
-						break;
-					}
+					if (*left.get() <= *right.get())
+						m_stack.push(std::shared_ptr<Object> (new True()));
+					else
+						m_stack.push(std::shared_ptr<Object> (new False()));
 				}
 				break;
 
 				case OP_GTE:
 				{
-					std::shared_ptr<Object> right = m_stack.top ();
-					m_stack.pop ();
+					std::shared_ptr<Object> right = m_stack.top();
+					m_stack.pop();
 
-					std::shared_ptr<Object> left = m_stack.top ();;
-					m_stack.pop ();
+					std::shared_ptr<Object> left = m_stack.top();
+					m_stack.pop();
 					
-					switch (left->type ())
-					{
-						case Object::NUMBER:
-						{
-							switch (right->type ())
-							{
-								case Object::NUMBER:
-								{
-									if (dynamic_cast<Number*> (left.get ())->number () >= dynamic_cast<Number*> (right.get ())->number ()) {
-										m_stack.push (m_env.obj_true ());
-									} else {
-										m_stack.push (m_env.obj_false ());
-									}
-								}
-								break;
-
-								default:
-								{
-									throw Error ("Interpreter : Type mismatch on operator '>='.");
-								}
-								break;
-							}
-						}
-						break;
-
-						default:
-						{
-							throw Error ("Interpreter : Invalid arguments to operator '>='.");
-						}
-						break;
-					}
+					if (*left.get() >= *right.get())
+						m_stack.push(std::shared_ptr<Object> (new True()));
+					else
+						m_stack.push(std::shared_ptr<Object> (new False()));
 				}
 				break;
 			}
