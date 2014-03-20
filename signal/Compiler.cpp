@@ -225,10 +225,11 @@ namespace Signal
 	{
 		auto code = func->code();
 		auto cases = switch_stmt.cases();
+		auto switchObj = std::shared_ptr<Object>(new String("[-switch-]"));
 		
-		// eval our first expression, set it to variable "--switch"
+		// eval our first expression, set it to variable "--switch--"
 		switch_stmt.expr()->accept(*this, func);
-		code->write(OP_DEF, std::shared_ptr<Object>(new String ("--switch")));
+		code->write(OP_DEF, switchObj);
 
 		// create our jump table
 		uint32_t startJmpTable = code->count();
@@ -240,7 +241,7 @@ namespace Signal
 			else
 			{
 				cases[i].first->accept(*this, func); //eval the comparison expression
-				code->write(OP_REF, std::shared_ptr<Object>(new String ("--switch"))); //reference our switch variable
+				code->write(OP_REF, switchObj); //reference our switch variable
 				code->write(OP_EQEQ); //compare them
 				code->write(OP_BRT, 0xBEADFEED); //branch if true to the actual code block
 			}

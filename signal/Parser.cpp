@@ -753,7 +753,7 @@ namespace Signal
 	Token Parser::require (Token::Type type)
 	{
 		if (m_buffer[0].type() != type) {
-			ThrowSignalError(m_lexer.line (), m_lexer.character (), "Parser : '%s' was expected.", m_buffer[0].type_to_string().c_str());
+			ThrowSignalError(m_lexer.line (), m_lexer.character (), "Parser : '%s' was not expected.", m_buffer[0].type_to_string().c_str());
 		} else {
 			return consume ();
 		}
