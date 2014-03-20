@@ -1,11 +1,26 @@
-﻿Build started 3/20/2014 11:41:31 AM.
+﻿Build started 3/20/2014 1:04:25 PM.
      1>Project "C:\Users\DarkstaR\Documents\Visual Studio 2010\Projects\signal\signal\signal.vcxproj" on node 2 (build target(s)).
      1>InitializeBuildStatus:
          Creating "Debug\signal.unsuccessfulbuild" because "AlwaysCreate" was specified.
        ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt Interpreter.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt AST.cpp Compiler.cpp Enviroment.cpp Interpreter.cpp Object.cpp Parser.cpp Scope.cpp main.cpp
+         Object.cpp
          Interpreter.cpp
      1>c:\users\darkstar\documents\visual studio 2010\projects\signal\signal\interpreter.cpp(81): warning C4244: 'initializing' : conversion from 'Signal::double_t' to 'Signal::int32_t', possible loss of data
+         Generating Code...
+     1>c:\users\darkstar\documents\visual studio 2010\projects\signal\signal\object.h(51): warning C4715: 'Signal::Object::typeName' : not all control paths return a value
+     1>c:\users\darkstar\documents\visual studio 2010\projects\signal\signal\object.h(51): warning C4715: 'Signal::Object::typeName' : not all control paths return a value
+         Compiling...
+         main.cpp
+         Scope.cpp
+         Parser.cpp
+         Enviroment.cpp
+         Compiler.cpp
+     1>c:\users\darkstar\documents\visual studio 2010\projects\signal\signal\compiler.cpp(258): warning C4018: '<' : signed/unsigned mismatch
+         AST.cpp
+         Generating Code...
+     1>c:\users\darkstar\documents\visual studio 2010\projects\signal\signal\object.h(51): warning C4715: 'Signal::Object::typeName' : not all control paths return a value
+     1>c:\users\darkstar\documents\visual studio 2010\projects\signal\signal\object.h(51): warning C4715: 'Signal::Object::typeName' : not all control paths return a value
      1>c:\users\darkstar\documents\visual studio 2010\projects\signal\signal\object.h(51): warning C4715: 'Signal::Object::typeName' : not all control paths return a value
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\DarkstaR\Documents\Visual Studio 2010\Projects\signal\Debug\signal.exe" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\signal.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\DarkstaR\Documents\Visual Studio 2010\Projects\signal\Debug\signal.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\DarkstaR\Documents\Visual Studio 2010\Projects\signal\Debug\signal.lib" /MACHINE:X86 Debug\AST.obj
@@ -31,4 +46,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:01.43
+Time Elapsed 00:00:06.10
