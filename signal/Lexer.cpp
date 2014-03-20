@@ -1,4 +1,5 @@
 #include "Lexer.h"
+#include "Utils.h"
 
 
 namespace Signal
@@ -108,26 +109,26 @@ namespace Signal
 					{
 						case '=': 
 						{
-							token = Token (Token::MINUS_EQUALS); 
+							token = Token(Token::MINUS_EQUALS); 
 							consume (); 
 						} 
 						break;
 
 						case '-': 
 						{
-							token = Token (Token::DECREMENT); 
+							token = Token(Token::DECREMENT); 
 							consume (); 
 						} 
 						break;
 
 						case '>': 
 						{
-							token = Token (Token::ARROW); 
+							token = Token(Token::ARROW); 
 							consume (); 
 						} 
 						break;
 
-						default : token = Token (Token::MINUS); break;
+						default: token = Token(Token::MINUS); break;
 					}
 				}
 				break;
@@ -288,20 +289,20 @@ namespace Signal
 
 				default:
 				{
-					if (is_digit (m_buffer[0])) {
-						token = Token (Token::NUMBER, get_number ());
-					} else if (is_alpha (m_buffer[0])) {
+					if (isDigit (m_buffer[0]))
+						token = Token (Token::NUMBER, get_number());
+					else if (isAlpha (m_buffer[0]))
+					{
 						std::string str = get_identifier ();
 
 						auto iterator = m_keywords.find (str);
-						if (iterator != m_keywords.end ()) {
+						if (iterator != m_keywords.end ())
 							token = Token (iterator->second, str);
-						} else {
+						else
 							token = Token (Token::IDENTIFIER, str);
-						}
-					} else {
-						ThrowSignalError (m_line, m_character, "Lexer : Unexpected character '%c'.", m_buffer[0]);
 					}
+					else
+						ThrowSignalError (m_line, m_character, "Lexer : Unexpected character '%c'.", m_buffer[0]);
 
 					// We don't need to consume, so we just return the token now.
 					return token;
@@ -323,16 +324,17 @@ namespace Signal
 		return m_character;
 	}
 
-	double Lexer::get_number ()
+	double Lexer::get_number()
 	{
 		std::string buffer = "";
 
-		while (is_digit (m_buffer[0])) {
-			buffer.push_back (m_buffer[0]);
-			consume ();
+		while (isDigit(m_buffer[0]) || isNumericModifier(m_buffer[0], -1))
+		{
+			buffer.push_back(m_buffer[0]);
+			consume();
 		}
 
-		double ret = atof (buffer.c_str ());
+		double ret = atof(buffer.c_str());
 		
 		if (ret == HUGE_VAL) {
 			ThrowSignalError (m_line, m_character, "Lexer : numerical value is out of range.");
@@ -349,13 +351,12 @@ namespace Signal
 		uint32_t line = m_line;
 		uint32_t character = m_character;
 
-		while (m_buffer[0] != '"') {
-			buffer.push_back (m_buffer[0]);
+		while (m_buffer[0] != '"')
+		{
+			buffer.push_back(m_buffer[0]);
 			consume ();
-
-			if (m_file.is_eof ()) {
+			if (m_file.is_eof ())
 				ThrowSignalError (line, character, "Lexer : String has not been terminated. Expected '\"'");
-			}
 		}
 
 		return buffer;
@@ -365,7 +366,8 @@ namespace Signal
 	{
 		std::string buffer = "";
 
-		while (is_alpha (m_buffer[0]) || is_digit (m_buffer[0])) {
+		while (isAlpha (m_buffer[0]) || isDigit (m_buffer[0]))
+		{
 			buffer.push_back (m_buffer[0]);
 			consume ();
 		}
@@ -385,15 +387,5 @@ namespace Signal
 			m_buffer[1] = m_file.read ();
 			m_character++;
 		}
-	}
-
-	bool Lexer::is_digit (int8_t character) const
-	{
-		return ((character >= '0') && (character <= '9'));
-	}
-
-	bool Lexer::is_alpha (int8_t character) const
-	{
-		return (((character >= 'a') && (character <= 'z')) || ((character >= 'A') && (character <= 'Z')) || character == '_');
 	}
 }

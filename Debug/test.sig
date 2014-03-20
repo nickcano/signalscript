@@ -126,8 +126,44 @@ function testSwitch(value)
 	}
 }
 
+function testComparisonOperators()
+{
+	if ("a" > "b")
+		print("BAD! 'a' is not > 'b'\n");
+	if ("a" == "b")
+		print("BAD! 'a' is not == 'b'\n");
+	if (!("a" < "b"))
+		print("BAD! 'a' IS < 'b'\n");
+
+	if ("a" == nil)
+		print("BAD! 'a' is not nil\n");
+	if ("a" == false)
+		print("BAD! 'a' is not false\n");
+	if ("a" != true)
+		print("BAD! 'a' should eval to true\n");
+
+	if (1 == "2")
+		print("BAD! 1 is not == '2'\n");
+	if (1 == "1abcde")
+		print("BAD! 1 is not == '1abcde'\n");
+	if (1 > "2")
+		print("BAD! 1 is not > '2'\n");
+	if (2 < "1")
+		print("BAD! 2 is not < '1'\n");
+	if (1.2345 != "1.2345")
+		print("BAD! 1.2345 IS == '1.2345'\n");
+	if ("1.2345" != 1.2345)
+		print("BAD! '1.2345' IS == 1.2345\n");
+
+	if (false == true)
+		print("BAD! false is not == true\n");
+	if (!(false == nil))
+		print("BAD! false IS == nil\n");
+}
+
 function main()
 {
+	testComparisonOperators();
 	testWhile();
 	testFor();
 	testIncDec();
