@@ -2,8 +2,11 @@
 #include "Scope.h"
 #include "Utils.h"
 
+#include <sstream>
+
 namespace Signal
 {
+	/* ----- NUMBER ----- */
 	Number::Number (double_t number)
 	:
 		m_number (number)
@@ -11,12 +14,12 @@ namespace Signal
 
 	void Number::set (double_t number)
 	{
-		m_number = number;
+		this->m_number = number;
 	}
 
 	double_t Number::number () const
 	{
-		return m_number;
+		return this->m_number;
 	}
 
 	Object::Type Number::type () const
@@ -24,6 +27,64 @@ namespace Signal
 		return Object::NUMBER;
 	}
 
+	std::string Number::toString()
+	{
+		std::stringstream output;
+		output << this->m_number;
+		return output.str();
+	}
+
+	Number* Number::getNumber() const
+	{
+		return const_cast<Number*>(this);
+	}
+
+	bool Number::operator==(const Object& rhs)
+	{
+		if (Number* num = rhs.getNumber())
+			return this->m_number == num->number();
+		else if (String* str = rhs.getString()) /* maybe this is too loose? */
+			return this->m_number == atoi(str->text().c_str());
+		else if (rhs.getFalse() || rhs.getNil())
+			return this->m_number == 0;
+		else if (rhs.getTrue())
+			return this->m_number != 0;
+		throw this->operatorError(*((Object*)&rhs), "==");
+	}
+	bool Number::operator!=(const Object& rhs)
+	{
+		return !(*this == rhs);
+	}
+	bool Number::operator< (const Object& rhs)
+	{
+		if (Number* num = rhs.getNumber())
+			return this->m_number < num->number();
+		else if (String* str = rhs.getString()) /* maybe this is too loose? */
+			return this->m_number < atoi(str->text().c_str());
+		throw this->operatorError(*((Object*)&rhs), "<");
+	}
+	bool Number::operator> (const Object& rhs)
+	{
+		if (Number* num = rhs.getNumber())
+			return this->m_number > num->number();
+		else if (String* str = rhs.getString()) /* maybe this is too loose? */
+			return this->m_number > atoi(str->text().c_str());
+		throw this->operatorError(*((Object*)&rhs), ">");
+	}
+	bool Number::operator<=(const Object& rhs)
+	{
+		if (Number* num = rhs.getNumber())
+			return this->m_number <= num->number();
+		else if (String* str = rhs.getString()) /* maybe this is too loose? */
+			return this->m_number <= atoi(str->text().c_str());
+		throw this->operatorError(*((Object*)&rhs), "<=");
+	}
+	bool Number::operator>=(const Object& rhs)
+	{
+		return !(*this <= rhs);
+	}
+
+	/* ----- STRING ----- */
 	String::String (const std::string& text)
 	:
 		m_text (unescape(text))
@@ -44,7 +105,65 @@ namespace Signal
 		return Object::STRING;
 	}
 
-	Instance::Instance (std::shared_ptr<Class> _class)
+	std::string String::toString()
+	{
+		return m_text;
+	}
+
+	String* String::getString() const
+	{
+		return const_cast<String*>(this);
+	}
+
+	bool String::operator==(const Object& rhs)
+	{
+		if (Number* num = rhs.getNumber())
+			return (*((Object*)&rhs) == *((Object*)this));
+		else if (String* str = rhs.getString())
+			return (this->m_text.compare(str->text()) == 0);
+		else if (rhs.getFalse() || rhs.getNil())
+			return (this->m_text == "false" || this->m_text == "nil");
+		else if (rhs.getTrue())
+			return (this->m_text == "true");
+		throw this->operatorError(*((Object*)&rhs), "==");
+	}
+	bool String::operator!=(const Object& rhs)
+	{
+		return !(*this == rhs);
+	}
+	bool String::operator< (const Object& rhs)
+	{
+		if (Number* num = rhs.getNumber())
+			return (*((Object*)&rhs) < *((Object*)this));
+		else if (String* str = rhs.getString()) /* maybe this is too loose? */
+			return (this->m_text.compare(str->text()) < 0);
+
+		throw this->operatorError(*((Object*)&rhs), "<");
+	}
+	bool String::operator> (const Object& rhs)
+	{
+		if (Number* num = rhs.getNumber())
+			return (*((Object*)&rhs) > *((Object*)this));
+		else if (String* str = rhs.getString()) /* maybe this is too loose? */
+			return (this->m_text.compare(str->text()) > 0);
+		throw this->operatorError(*((Object*)&rhs), "<");
+	}
+	bool String::operator<=(const Object& rhs)
+	{
+		if (Number* num = rhs.getNumber())
+			return (*((Object*)&rhs) <= *((Object*)this));
+		else if (String* str = rhs.getString()) /* maybe this is too loose? */
+			return (this->m_text.compare(str->text()) <= 0);
+		throw this->operatorError(*((Object*)&rhs), "<=");
+	}
+	bool String::operator>=(const Object& rhs)
+	{
+		return !(*this <= rhs);
+	}
+
+
+	/* ----- INSTANCE ----- */
+	Instance::Instance(std::shared_ptr<Class> _class)
 	:
 		m_class (_class)
 	{

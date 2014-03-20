@@ -1,11 +1,11 @@
 #pragma once
 
 #include <vector>
-#include <sstream>
 #include <string>
 
 #include "Code.h"
 #include "Types.h"
+#include "Error.h"
 
 namespace Signal
 {
@@ -36,6 +36,19 @@ namespace Signal
 		};
 
 		virtual Type type () const = 0;
+		std::string typeName()
+		{
+			switch (this->type())
+			{
+				case NUMBER: return "number";
+				case STRING: return "number";
+				case INSTANCE: return "instance";
+				case NIL: return "nil";
+				case TRUE:
+				case FALSE:
+					return "boolean";
+			}
+		}
 		virtual std::string toString() { return ""; }
 
 		virtual Number* getNumber() const { return nullptr; }
@@ -44,6 +57,19 @@ namespace Signal
 		virtual Nil* getNil() const { return nullptr; }
 		virtual True* getTrue() const { return nullptr; }
 		virtual False* getFalse() const { return nullptr; }
+
+		virtual bool operator==(const Object& rhs){ throw this->operatorError(*((Object*)&rhs), "=="); }
+		virtual bool operator!=(const Object& rhs){ throw this->operatorError(*((Object*)&rhs), "!="); }
+		virtual bool operator< (const Object& rhs){ throw this->operatorError(*((Object*)&rhs), "<"); }
+		virtual bool operator> (const Object& rhs){ throw this->operatorError(*((Object*)&rhs), ">"); }
+		virtual bool operator<=(const Object& rhs){ throw this->operatorError(*((Object*)&rhs), "<="); }
+		virtual bool operator>=(const Object& rhs){ throw this->operatorError(*((Object*)&rhs), ">="); }
+
+		protected:
+		Error operatorError(Object& rhs, const char* op)
+		{
+			return Error("Operator '%s' : Cannot compare object of type '%s' to object of type '%s'", op, this->typeName().c_str(), rhs.typeName().c_str());
+		}
 	};
 
 	class Number : public Object
@@ -57,16 +83,17 @@ namespace Signal
 
 		Type type () const;
 
-		virtual std::string toString()
-		{
-			std::stringstream output;
-			output << m_number;
-			return output.str();
-		}
-		virtual Number* getNumber() const { return const_cast<Number*>(this); }
+		virtual std::string toString();
+		virtual Number* getNumber() const;
+
+		virtual bool operator==(const Object& rhs);
+		virtual bool operator!=(const Object& rhs);
+		virtual bool operator< (const Object& rhs);
+		virtual bool operator> (const Object& rhs);
+		virtual bool operator<=(const Object& rhs);
+		virtual bool operator>=(const Object& rhs);
 
 		private:
-
 		double_t m_number;
 	};
 
@@ -80,11 +107,15 @@ namespace Signal
 		const std::string& text () const;
 
 		Type type () const;
-		virtual std::string toString()
-		{
-			return m_text;
-		}
-		virtual String* getString() const { return const_cast<String*>(this); }
+		virtual std::string toString();
+		virtual String* getString() const;
+
+		virtual bool operator==(const Object& rhs);
+		virtual bool operator!=(const Object& rhs);
+		virtual bool operator< (const Object& rhs);
+		virtual bool operator> (const Object& rhs);
+		virtual bool operator<=(const Object& rhs);
+		virtual bool operator>=(const Object& rhs);
 
 		private:
 
