@@ -122,9 +122,9 @@ namespace Signal
 		else if (String* str = rhs.getString())
 			return (this->m_text.compare(str->text()) == 0);
 		else if (rhs.getFalse() || rhs.getNil())
-			return (this->m_text == "false" || this->m_text == "nil");
+			return false;
 		else if (rhs.getTrue())
-			return (this->m_text == "true");
+			return true;
 		throw this->operatorError(*((Object*)&rhs), "==");
 	}
 	bool String::operator!=(const Object& rhs)
@@ -183,6 +183,17 @@ namespace Signal
 	Object::Type Instance::type () const
 	{
 		return Object::INSTANCE;
+	}
+
+	bool Instance::operator==(const Object& rhs)
+	{
+		if (Instance* inst = rhs.getInstance())
+			return (this->m_scope.get() == inst->scope().get());
+		throw this->operatorError(*((Object*)&rhs), "==");
+	}
+	bool Instance::operator!=(const Object& rhs)
+	{
+		return !(*this == rhs);
 	}
 
 	Class::Class (const std::string& name)

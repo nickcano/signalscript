@@ -135,6 +135,9 @@ namespace Signal
 
 		virtual Instance* getInstance() const { return const_cast<Instance*>(this); }
 
+		virtual bool operator==(const Object& rhs);
+		virtual bool operator!=(const Object& rhs);
+
 		private:
 
 		std::shared_ptr<Class> m_class;
@@ -154,6 +157,17 @@ namespace Signal
 
 		virtual std::string toString() { return "nil"; }
 		virtual Nil* getNil() const { return const_cast<Nil*>(this); }
+
+		bool operator==(const Object& rhs)
+		{
+			if (rhs.getTrue())
+				return false;
+			else if (rhs.getFalse() || rhs.getNil())
+				return true;
+			else
+				return (*((Object*)&rhs) == *((Object*)this));
+		}
+		bool operator!=(const Object& rhs) { return !(*this == rhs); }
 	};
 
 	class True : public Object
@@ -168,6 +182,17 @@ namespace Signal
 		}
 		virtual std::string toString() { return "true"; }
 		virtual True* getTrue() const { return const_cast<True*>(this); }
+
+		bool operator==(const Object& rhs)
+		{
+			if (rhs.getTrue())
+				return true;
+			else if (rhs.getFalse() || rhs.getNil())
+				return false;
+			else
+				return (*((Object*)&rhs) == *((Object*)this));
+		}
+		bool operator!=(const Object& rhs) { return !(*this == rhs); }
 	};
 
 	class False : public Object
@@ -183,6 +208,17 @@ namespace Signal
 
 		virtual std::string toString() { return "false"; }
 		virtual False* getFalse() const { return const_cast<False*>(this); }
+
+		bool operator==(const Object& rhs)
+		{
+			if (rhs.getTrue())
+				return false;
+			else if (rhs.getFalse() || rhs.getNil())
+				return true;
+			else
+				return (*((Object*)&rhs) == *((Object*)this));
+		}
+		bool operator!=(const Object& rhs) { return !(*this == rhs); }
 	};
 
 	class Class
