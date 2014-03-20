@@ -1,0 +1,10 @@
+syntax: glob
+*.exe
+*.pdb
+*.obj
+*ipch*
+ipch/*
+*.tlog
+*.manifest
+*.ilk
+*.cache
