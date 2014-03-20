@@ -29,9 +29,6 @@ namespace Signal
 		std::string get_string ();
 		std::string get_identifier ();
 
-		bool is_digit (int8_t character) const;
-		bool is_alpha (int8_t character) const;
-
 		FileInput&  m_file;
 
 		// Holds two characters, the current one and the lookahead

@@ -43,8 +43,13 @@ namespace Signal
 	{
 		if (Number* num = rhs.getNumber())
 			return this->m_number == num->number();
-		else if (String* str = rhs.getString()) /* maybe this is too loose? */
-			return this->m_number == atoi(str->text().c_str());
+		else if (String* str = rhs.getString())
+		{
+			double_t value;
+			if (stringToDouble(str->text(), value))
+				return this->m_number == value;
+			return false;
+		}
 		else if (rhs.getFalse() || rhs.getNil())
 			return this->m_number == 0;
 		else if (rhs.getTrue())
@@ -59,16 +64,26 @@ namespace Signal
 	{
 		if (Number* num = rhs.getNumber())
 			return this->m_number < num->number();
-		else if (String* str = rhs.getString()) /* maybe this is too loose? */
-			return this->m_number < atoi(str->text().c_str());
+		else if (String* str = rhs.getString())
+		{
+			double_t value;
+			if (stringToDouble(str->text(), value))
+				return this->m_number < value;
+			return false;
+		}
 		throw this->operatorError(*((Object*)&rhs), "<");
 	}
 	bool Number::operator> (const Object& rhs)
 	{
 		if (Number* num = rhs.getNumber())
 			return this->m_number > num->number();
-		else if (String* str = rhs.getString()) /* maybe this is too loose? */
-			return this->m_number > atoi(str->text().c_str());
+		else if (String* str = rhs.getString())
+		{
+			double_t value;
+			if (stringToDouble(str->text(), value))
+				return this->m_number > value;
+			return false;
+		}
 		throw this->operatorError(*((Object*)&rhs), ">");
 	}
 	bool Number::operator<=(const Object& rhs)
