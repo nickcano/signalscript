@@ -323,13 +323,12 @@ namespace Signal
 
 	void Compiler::visit (const ASTAssignment& expr, std::shared_ptr<Function> func)
 	{
-		if (func->scope ()->find(expr.var ()).get () == nullptr) {
-			func->scope ()->define(expr.var(), std::shared_ptr<Object>(new Nil ()));
+		if (func->scope()->find(expr.var()).get () == nullptr) {
+			func->scope()->define(expr.var(), std::shared_ptr<Object>(new Nil ()));
 		}
 
-		expr.expr ()->accept (*this, func);
-
-		func->code ()->write (OP_SET, std::shared_ptr<Object> (new String (expr.var ())));
+		expr.expr()->accept (*this, func);
+		func->code ()->write (OP_SET, std::shared_ptr<Object>(new String (expr.var())));
 	}
 
 

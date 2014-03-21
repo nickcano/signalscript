@@ -611,7 +611,8 @@ namespace Signal
 		return expr;
 	}
 
-	// Handles <identifier> "(" <argument_list> ")"
+	// Handles <identifier> "[" <table_key> "]"
+	//		   <identifier> "(" <argument_list> ")"
 	//		   <identifier> -> <identifier> "(" <argument_list> ")"
 	std::shared_ptr<ASTExpression> Parser::do_expr9 ()
 	{
@@ -620,128 +621,171 @@ namespace Signal
 		while (match (Token::LEFT_PARENTHESES) || match (Token::ARROW) || match (Token::LEFT_BRACKET)) {
 			switch (m_buffer[0].type ())
 			{
+				case Token::LEFT_BRACKET:
+					{
+						/*consume ();
+						if (expr->type () != ASTExpression::IDENTIFIER)
+							ThrowSignalError(m_lexer.line (), m_lexer.character (), "Parser : Table expected.");
+						
+						std::shared_ptr<ASTExpression> tableIndex = do_expr1();
+						require(Token::RIGHT_BRACKET);
+
+						expr = std::shared_ptr<ASTExpression>(new ASTTable(expr, tableIndex));*/
+					}
+					break;
 				case Token::LEFT_PARENTHESES:
-				{
-					consume ();
-					if (expr->type () != ASTExpression::IDENTIFIER) {
-						ThrowSignalError(m_lexer.line (), m_lexer.character (), "Parser : Function call expected.");
-					}
+					{
+						consume ();
+						if (expr->type () != ASTExpression::IDENTIFIER)
+							ThrowSignalError(m_lexer.line (), m_lexer.character (), "Parser : Function call expected.");
 
-					std::vector<std::shared_ptr<ASTExpression>> args;
+						std::vector<std::shared_ptr<ASTExpression>> args;
 
-					while (!match (Token::RIGHT_PARENTHESES)) {
-						args.push_back (do_expr1 ());
+						while (!match (Token::RIGHT_PARENTHESES)) {
+							args.push_back (do_expr1 ());
 
-						if (match (Token::COMMA)) {
-							consume ();
+							if (match (Token::COMMA)) {
+								consume ();
+							}
 						}
+
+						require (Token::RIGHT_PARENTHESES);
+
+						expr = std::shared_ptr<ASTExpression>(new ASTGFuncCall (dynamic_cast<ASTIdentifier*>(expr.get ())->name (), args));
 					}
-
-					require (Token::RIGHT_PARENTHESES);
-
-					expr = std::shared_ptr<ASTExpression> (new ASTGFuncCall (dynamic_cast<ASTIdentifier*>(expr.get ())->name (), args));
-				}
-				break;
-
+					break;
 				case Token::ARROW:
-				{
-					consume ();
-					if (expr->type () != ASTExpression::IDENTIFIER) {
-						ThrowSignalError(m_lexer.line (), m_lexer.character(), "Parser : Class object expected.");
-					}
+					{
+						consume ();
+						if (expr->type () != ASTExpression::IDENTIFIER)
+							ThrowSignalError(m_lexer.line (), m_lexer.character(), "Parser : Class object expected.");
 
-					std::string func_name = require (Token::IDENTIFIER).text ();
+						std::string func_name = require (Token::IDENTIFIER).text ();
 
-					std::vector<std::shared_ptr<ASTExpression>> args;
+						std::vector<std::shared_ptr<ASTExpression>> args;
 
-					require (Token::LEFT_PARENTHESES);
+						require (Token::LEFT_PARENTHESES);
 
-					while (!match (Token::RIGHT_PARENTHESES)) {
-						args.push_back (do_expr1 ());
+						while (!match (Token::RIGHT_PARENTHESES)){
+							args.push_back (do_expr1 ());
 
-						if (match (Token::COMMA)) {
-							consume ();
+							if (match (Token::COMMA)) {
+								consume ();
+							}
 						}
+
+						require (Token::RIGHT_PARENTHESES);
+
+						expr = std::shared_ptr<ASTExpression> (new ASTMFuncCall (func_name, dynamic_cast<ASTIdentifier*>(expr.get ())->name(), args));
 					}
-
-					require (Token::RIGHT_PARENTHESES);
-
-					expr = std::shared_ptr<ASTExpression> (new ASTMFuncCall (func_name, dynamic_cast<ASTIdentifier*>(expr.get ())->name(), args));
-				}
-				break;
+					break;
 			}
 		}
 
 		return expr;
 	}
 
-	// Handles "(" <expression> ")"
+	// Handles "{" <key = value> list "}"
+	//		   "(" <expression> ")"
 	//		   <identifier>
 	//		   <number>
 	//		   <string>
 	//		   "nil"
 	//		   "true"
 	//		   "false"
-	std::shared_ptr<ASTExpression> Parser::do_expr10 ()
+	std::shared_ptr<ASTExpression> Parser::do_expr10()
 	{
-		switch (m_buffer[0].type ())
+		switch (m_buffer[0].type())
 		{
+		case Token::LEFT_BRACE:
+				{
+					consume();
+					while (!match(Token::RIGHT_BRACE))
+					{
+						if (match(Token::LEFT_BRACKET)) //[key] = expvalue
+						{
+							consume();
+							if (!match(Token::NUMBER) && !match(Token::STRING))
+								ThrowSignalError(m_lexer.line (), m_lexer.character(), "Parser : Expected string or number key for table.");
+							do_expr10();
+							require (Token::RIGHT_BRACKET);
+
+							require(Token::EQUALS);
+							do_expr1();
+						}
+						else
+						{
+							std::shared_ptr<ASTExpression> ret = do_expr1();
+							if (ret->type() == ASTExpression::IDENTIFIER) // key = expvalue || value
+							{
+								if (match(Token::EQUALS))
+								{
+									require(Token::EQUALS);
+									do_expr1();
+								}
+							}
+							else // expvalue
+							{
+
+							}
+						}
+
+						if (match(Token::COMMA))
+							consume();
+					}
+					require (Token::RIGHT_BRACE);
+					return std::shared_ptr<ASTExpression>(new ASTNil());
+				}
+				break;
 			case Token::LEFT_PARENTHESES:
-			{
-				consume ();
-				std::shared_ptr<ASTExpression> ret = do_expr1 ();
-				require (Token::RIGHT_PARENTHESES);
-				return ret;
-			}
-			break;
-
+				{
+					consume();
+					std::shared_ptr<ASTExpression> ret = do_expr1 ();
+					require (Token::RIGHT_PARENTHESES);
+					return ret;
+				}
+				break;
 			case Token::IDENTIFIER:
-			{
-				std::string var = require (Token::IDENTIFIER).text ();
-				return std::shared_ptr<ASTExpression> (new ASTIdentifier(var));
-			}
-			break;
-
+				{
+					std::string var = require(Token::IDENTIFIER).text();
+					return std::shared_ptr<ASTExpression>(new ASTIdentifier(var));
+				}
+				break;
 			case Token::NUMBER:
-			{
-				double_t num = require (Token::NUMBER).number ();
-				return std::shared_ptr<ASTExpression> (new ASTNumber (num));
-			}
-			break;
-
+				{
+					double_t num = require (Token::NUMBER).number();
+					return std::shared_ptr<ASTExpression>(new ASTNumber(num));
+				}
+				break;
 			case Token::STRING:
-			{
-				std::string str = require (Token::STRING).text ();
-				return std::shared_ptr<ASTExpression> (new ASTString (str));
-			}
-			break;
-
+				{
+					std::string str = require (Token::STRING).text();
+					return std::shared_ptr<ASTExpression>(new ASTString(str));
+				}
+				break;
 			case Token::NIL:
-			{
-				consume ();
-				return std::shared_ptr<ASTExpression> (new ASTNil ());
-			}
-			break;
-
+				{
+					consume();
+					return std::shared_ptr<ASTExpression>(new ASTNil());
+				}
+				break;
 			case Token::TRUE:
-			{
-				consume ();
-				return std::shared_ptr<ASTExpression> (new ASTTrue());
-			}
-			break;
-
+				{
+					consume();
+					return std::shared_ptr<ASTExpression>(new ASTTrue());
+				}
+				break;
 			case Token::FALSE:
-			{
-				consume ();
-				return std::shared_ptr<ASTExpression> (new ASTFalse());
-			}
-			break;
-
+				{
+					consume();
+					return std::shared_ptr<ASTExpression>(new ASTFalse());
+				}
+				break;
 			default:
-			{
-				ThrowSignalError(m_lexer.line(), m_lexer.character(), "Parser : Primary expression expected.");
-			}
-			break;
+				{
+					ThrowSignalError(m_lexer.line(), m_lexer.character(), "Parser : Primary expression expected.");
+				}
+				break;
 		}
 	}
 
