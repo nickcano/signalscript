@@ -937,4 +937,75 @@ namespace Signal
 			visitor.visit (*this, func);
 		}
 	};
+
+	class ASTTable : public ASTExpression
+	{
+		public:
+
+		void accept (VisitorInterface& visitor, std::shared_ptr<Function> func) const
+		{
+			visitor.visit (*this, func);
+		}
+
+		bool insertValue(std::shared_ptr<ASTExpression> key, std::shared_ptr<ASTExpression> value)
+		{
+			if (key == nullptr) //no key set, use first open index
+			{
+				m_autoIntegerValues[m_autoIntegerValues.size()] = value;
+				return true;
+			}
+			else //key set, let's figure out what we're doing
+			{
+				if (key->type() == ASTExpression::NUMBER)
+				{
+					auto ikey = dynamic_cast<ASTNumber*>(key.get());
+					if (m_integerValues.find(ikey->value()) != m_integerValues.end())
+						return false;
+					m_integerValues[ikey->value()] = value;
+				}
+				else if (key->type() == ASTExpression::STRING)
+				{
+					auto tkey = dynamic_cast<ASTString*>(key.get());
+					if (m_stringValues.find(tkey->text()) != m_stringValues.end())
+						return false;
+					m_stringValues[tkey->text()] = value;
+				}
+				else if (key->type() == ASTExpression::STRING)
+				{
+					auto ikey = dynamic_cast<ASTIdentifier*>(key.get());
+					if (m_stringValues.find(ikey->name()) != m_stringValues.end())
+						return false;
+					m_stringValues[ikey->name()] = value;
+				}
+				else
+					return false;
+				return true;
+			}
+			return false;
+		}
+
+		void normalizeValues()
+		{
+			//we insert all of the values that were specified without keys at the first open integer indexes
+			for (auto kvp = m_autoIntegerValues.begin(); kvp != m_autoIntegerValues.end(); kvp++)
+			{
+				for (uint32_t i = 0; true; i++)
+				{
+					if (m_integerValues.find(i) == m_integerValues.end())
+					{
+						m_integerValues[i] = kvp->second;
+						break;
+					}
+				}
+			}
+			m_autoIntegerValues.clear();
+		}
+
+		private:
+		
+		std::map<std::string, std::shared_ptr<ASTExpression>> m_stringValues;
+		std::map<uint32_t, std::shared_ptr<ASTExpression>> m_integerValues;
+		std::map<uint32_t, std::shared_ptr<ASTExpression>> m_autoIntegerValues;
+
+	};
 }
