@@ -9,7 +9,7 @@ namespace Signal
 	:
 		m_vars (copy.m_vars)
 	{
-		if (copy.parent ().get () != nullptr) {
+		if (copy.parent ().get () != nullptr){
 			m_parent = std::shared_ptr<Scope> (new Scope (*copy.m_parent));
 		}
 	}
@@ -34,7 +34,7 @@ namespace Signal
 		if (m_vars[name] == nullptr)
 		{
 			if (this->m_parent == nullptr)
-				throw Error ("Scope : Variable '%s' has not been defined.", name.c_str ());
+				throw Error ("Scope : Variable '%s' has not been defined.", name.c_str());
 			this->m_parent->set(name, object);
 		}
 		m_vars[name] = object;

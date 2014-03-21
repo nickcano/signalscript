@@ -700,39 +700,49 @@ namespace Signal
 		case Token::LEFT_BRACE:
 				{
 					consume();
+
+					ASTTable* table = new ASTTable();
 					while (!match(Token::RIGHT_BRACE))
 					{
+						bool good = true;
 						if (match(Token::LEFT_BRACKET)) //[key] = expvalue
 						{
 							consume();
 							if (!match(Token::NUMBER) && !match(Token::STRING))
 								ThrowSignalError(m_lexer.line (), m_lexer.character(), "Parser : Expected string or number key for table.");
-							do_expr10();
+							std::shared_ptr<ASTExpression> key = do_expr10();
 							require (Token::RIGHT_BRACKET);
 
 							require(Token::EQUALS);
-							do_expr1();
+							std::shared_ptr<ASTExpression> value = do_expr1();
+
+							good = table->insertValue(key, value);
 						}
 						else
 						{
-							std::shared_ptr<ASTExpression> ret = do_expr1();
-							if (ret->type() == ASTExpression::IDENTIFIER) // key = expvalue || value
+							std::shared_ptr<ASTExpression> key = do_expr1();
+							if (key->type() == ASTExpression::IDENTIFIER) // key = expvalue || value
 							{
 								if (match(Token::EQUALS))
 								{
 									require(Token::EQUALS);
-									do_expr1();
+									std::shared_ptr<ASTExpression> value = do_expr1();
+
+									good = table->insertValue(key, value);
 								}
 							}
 							else // expvalue
-							{
-
-							}
+								good = table->insertValue(nullptr, key);
 						}
+
+						if (!good)
+							ThrowSignalError(m_lexer.line (), m_lexer.character(), "Parser : Invalid key/value pair for table (is it a duplicate?).");
 
 						if (match(Token::COMMA))
 							consume();
 					}
+
+					table->normalizeValues();
 					require (Token::RIGHT_BRACE);
 					return std::shared_ptr<ASTExpression>(new ASTNil());
 				}
