@@ -163,10 +163,11 @@ function testComparisonOperators()
 
 function main()
 {
-	mytable1 = {key1 = "value", ["key2"] = "value2", [1] = 1234, 1234};
-	mytable2 = {"value1", 2, 3, [4] = "value4", [5] = 5, 6, 7, 8, mytable1};
-	mytable3 = {mytable1 = mytable1};
-
+	mytable1 = {key1 = "value", ["key2"] = "value2", [1] = 1234, 1993};
+	mytable2 = {0, "value1", 2, 3, [4] = "value4", [5] = 5, 6, 7, 8, mytable1};
+	mytable3 = {mytable1 = mytable1, mytable2 = mytable1, mytable3 = mytable2};
+	mytable4 = {10+10};
+	return false;
 	testComparisonOperators();
 	testWhile();
 	testFor();

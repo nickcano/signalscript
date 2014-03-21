@@ -714,22 +714,23 @@ namespace Signal
 							require (Token::RIGHT_BRACKET);
 
 							require(Token::EQUALS);
-							std::shared_ptr<ASTExpression> value = do_expr1();
+							std::shared_ptr<ASTExpression> value = do_expr2();
 
 							good = table->insertValue(key, value);
 						}
 						else
 						{
-							std::shared_ptr<ASTExpression> key = do_expr1();
+							std::shared_ptr<ASTExpression> key = do_expr2();
 							if (key->type() == ASTExpression::IDENTIFIER) // key = expvalue || value
 							{
 								if (match(Token::EQUALS))
 								{
 									require(Token::EQUALS);
-									std::shared_ptr<ASTExpression> value = do_expr1();
-
+									std::shared_ptr<ASTExpression> value = do_expr2();
 									good = table->insertValue(key, value);
 								}
+								else
+									good = table->insertValue(nullptr, key);
 							}
 							else // expvalue
 								good = table->insertValue(nullptr, key);

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <iostream>
 
 #include "Error.h"
 #include "Types.h"
@@ -970,7 +971,7 @@ namespace Signal
 						return false;
 					m_stringValues[tkey->text()] = value;
 				}
-				else if (key->type() == ASTExpression::STRING)
+				else if (key->type() == ASTExpression::IDENTIFIER)
 				{
 					auto ikey = dynamic_cast<ASTIdentifier*>(key.get());
 					if (m_stringValues.find(ikey->name()) != m_stringValues.end())
@@ -999,6 +1000,53 @@ namespace Signal
 				}
 			}
 			m_autoIntegerValues.clear();
+
+			std::cout << "-------------------" << std::endl;
+			for (auto kvp = m_stringValues.begin(); kvp != m_stringValues.end(); kvp++)
+			{
+				std::cout << "[" << kvp->first << "] ";
+				if (kvp->second->type() == ASTExpression::NUMBER)
+				{
+					auto ikey = dynamic_cast<ASTNumber*>(kvp->second.get());
+					std::cout << "(number) " << ikey->value();
+				}
+				else if (kvp->second->type() == ASTExpression::STRING)
+				{
+					auto tkey = dynamic_cast<ASTString*>(kvp->second.get());
+					std::cout << "(string) " << tkey->text();
+				}
+				else if (kvp->second->type() == ASTExpression::IDENTIFIER)
+				{
+					auto ikey = dynamic_cast<ASTIdentifier*>(kvp->second.get());
+					std::cout << "(iden) " << ikey->name();
+				}
+				else
+					std::cout << kvp->second->type();
+				std::cout << std::endl;
+			}
+
+			for (auto kvp = m_integerValues.begin(); kvp != m_integerValues.end(); kvp++)
+			{
+				std::cout << "[" << kvp->first << "] ";
+				if (kvp->second->type() == ASTExpression::NUMBER)
+				{
+					auto ikey = dynamic_cast<ASTNumber*>(kvp->second.get());
+					std::cout << "(number) " << ikey->value();
+				}
+				else if (kvp->second->type() == ASTExpression::STRING)
+				{
+					auto tkey = dynamic_cast<ASTString*>(kvp->second.get());
+					std::cout << "(string) " << tkey->text();
+				}
+				else if (kvp->second->type() == ASTExpression::IDENTIFIER)
+				{
+					auto ikey = dynamic_cast<ASTIdentifier*>(kvp->second.get());
+					std::cout << "(iden) " << ikey->name();
+				}
+				else
+					std::cout << kvp->second->type();
+				std::cout << std::endl;
+			}
 		}
 
 		private:
