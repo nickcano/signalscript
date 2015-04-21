@@ -2,7 +2,7 @@
 
 This is a fork of [a scripting language](http://code.google.com/p/tibiasignal/source/browse/#svn/trunk) that an old friend of mine made back in 2010.
 
-The porject got abandoned, and I made this fork just to get familiar with the code, add some small features, and learn about abstract syntax trees.
+The project got abandoned, and I made this fork just to get familiar with the code, add some small features, and learn about abstract syntax trees.
 
 
 
