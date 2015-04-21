@@ -1,0 +1,21 @@
+syntax: glob
+*.exe
+*.pdb
+*.obj
+*ipch*
+ipch/*
+*.tlog
+*.manifest
+*.ilk
+*.cache
+*.idb
+*.opensdf
+
+*/Debug/*
+*/Release/*
+Debug/*
+Release/*
+
+*.suo
+*.sdf
+*.user
